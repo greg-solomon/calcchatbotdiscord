@@ -16,7 +16,7 @@ export async function getAnswerImage(
 ) {
   try {
     const url = `https://www.calcchat.com/book/Calculus-11e/${chapter}/${section}/${exercise}`;
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({args: ['--no-sandbox']});
     const page = await browser.newPage();
     await page.setExtraHTTPHeaders({
       'Accept-Language': 'en-US',

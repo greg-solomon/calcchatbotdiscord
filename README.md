@@ -19,3 +19,11 @@ If you pass the bot an invalid chapter, section, or exercise, CalcChat will defa
 `!a help`
 
 Shows calcbot commands and usage
+
+
+## Heroku Deployment
+
+Heroku needs the puppeteer buildpack in order to use puppeteer
+
+Add it with
+`heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git`

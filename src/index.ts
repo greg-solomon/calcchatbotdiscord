@@ -6,6 +6,7 @@
  */
 import Discord from 'discord.js';
 import {messageCommands} from './commands';
+
 if (process.env.NODE_ENV === 'development') {
   require('dotenv').config();
 }
