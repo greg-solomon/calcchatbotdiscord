@@ -26,6 +26,9 @@ client.login(process.env.TOKEN);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('.'));
+
   app.get('*', (_req, res) => {
     res.sendFile(path.resolve(__dirname, 'index.html'));
   });
