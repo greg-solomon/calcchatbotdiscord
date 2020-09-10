@@ -9,7 +9,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "dev": "nodemon dist/",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false tsc index.ts"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false tsc"
   },
   "license": "MIT",
   "devDependencies": {
