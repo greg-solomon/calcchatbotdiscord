@@ -46,19 +46,19 @@ Under the Deploy tab, find the command to add the remote repository that looks l
 
 `heroku git:remote -a <appname>`
 
-Run that command in your local code, then run the deploy commands.
-
-```
-$ git add .
-$ git commit -am "make it better"
-$ git push heroku master
-```
-
 Heroku needs the puppeteer buildpack in order to use puppeteer
 
 Add it with
 ```
 heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
+```
+
+Then run the deploy commands.
+
+```
+$ git add .
+$ git commit -am "make it better"
+$ git push heroku master
 ```
 
 In Heroku, under your settings tab, click the `Reveal Config Vars` button to reveal environment variables and add a new one called `TOKEN` and set it to your token value from Discord.
