@@ -26,14 +26,14 @@ export default async (message: Message) => {
       if (!section || !chapter || !exercise) {
         message.reply('Invalid parameters');
       } else {
-        const {url, imgUrl} = await getAnswerImage(section, chapter, exercise);
+        const {imgUrl} = await getAnswerImage(section, chapter, exercise);
         message.channel.send(
-            `**${section}.${chapter}.${exercise}**\n\n${url}\n\n${imgUrl}`,
+            `**${section}.${chapter}.${exercise}**\n${imgUrl}`,
         );
       }
     }
   } catch (err) {
     console.error(err.message);
-    message.channel.send(`I had an issue with that.\n${err.message}`);
+    message.channel.send(`I had an issue with that.`);
   }
 };

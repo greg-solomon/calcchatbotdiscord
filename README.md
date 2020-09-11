@@ -1,5 +1,11 @@
 # CalcChat Bot for Discord
 
+Posts solutions to textbook questions in discord chat.
+
+Currently only supports Calculus 11e
+
+[Add to server](https://discord.com/oauth2/authorize?client_id=753420139541561395&permissions=19456&scope=bot)
+
 ## Commands
 
 ### Get Solution Image
@@ -20,10 +26,37 @@ If you pass the bot an invalid chapter, section, or exercise, CalcChat will defa
 
 Shows calcbot commands and usage
 
+## Running Your Own Instance
+
+Register your bot on Discord on the [Discord Developer Portal](https://discord.com/developers/docs/topics/oauth2)
+
+Copy down your Client ID from the General Information Tab and your Token from the Bot tab.
+
+Your Client ID will be needed to create the invite link. The invite link will look like
+
+`https://discord.com/oauth2/authorize?client_id=<CLIENT_ID>&permissions=19456&scope=bot`
+
+Now you are ready to deploy. 
 
 ## Heroku Deployment
+
+On Heroku, create a new application.
+
+Under the Deploy tab, find the command to add the remote repository that looks like
+
+`heroku git:remote -a <appname>`
+
+Run that command in your local code, then run the deploy commands.
+
+```
+$ git add .
+$ git commit -am "make it better"
+$ git push heroku master
+```
 
 Heroku needs the puppeteer buildpack in order to use puppeteer
 
 Add it with
-`heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git`
+```
+heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
+```
