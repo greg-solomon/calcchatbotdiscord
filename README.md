@@ -60,3 +60,5 @@ Add it with
 ```
 heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
 ```
+
+In Heroku, under your settings tab, click the `Reveal Config Vars` button to reveal environment variables and add a new one called `TOKEN` and set it to your token value from Discord.
