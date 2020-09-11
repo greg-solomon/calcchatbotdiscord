@@ -28,7 +28,7 @@ export default async (message: Message) => {
       } else {
         const {imgUrl} = await getAnswerImage(chapter, section, exercise);
         message.channel.send(
-            `**${section}.${chapter}.${exercise}**\n${imgUrl}`,
+            `**${chapter}.${section}.${exercise}**\n${imgUrl}`,
         );
       }
     }
