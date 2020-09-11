@@ -26,7 +26,7 @@ export default async (message: Message) => {
       if (!section || !chapter || !exercise) {
         message.reply('Invalid parameters');
       } else {
-        const {imgUrl} = await getAnswerImage(section, chapter, exercise);
+        const {imgUrl} = await getAnswerImage(chapter, section, exercise);
         message.channel.send(
             `**${section}.${chapter}.${exercise}**\n${imgUrl}`,
         );
