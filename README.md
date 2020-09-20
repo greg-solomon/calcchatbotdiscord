@@ -64,6 +64,9 @@ Under the Deploy tab, find the command to add the remote repository that looks l
 
 `heroku git:remote -a <appname>`
 
+Add the Redis buildpack:
+
+`heroku buildpacks:add https://github.com/heroku/heroku-buildpack-redis`
 Then run the deploy commands.
 
 ```
