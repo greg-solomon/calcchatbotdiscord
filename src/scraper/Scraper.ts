@@ -1,51 +1,95 @@
-import puppeteer from 'puppeteer';
-
+import cache from '../cache';
+import {Message} from 'discord.js';
+import {parseString} from 'xml2js';
+import axios from 'axios';
+import urls from '../urls.json';
 
 /**
- * Context provider for user data from firebase
+ * Returns Solution Image
  *
+ * @param {string} guildId
+ * @param {Message} message
  * @param {string} chapter
  * @param {string} section
  * @param {string} exercise
- * @return {Object}
  */
-export async function getAnswerImage(
+export function getAnswerImage(
+    guildId: string,
+    message: Message,
     chapter: string,
     section: string,
     exercise: string,
 ) {
   try {
-    const url = `https://www.calcchat.com/book/Calculus-11e/${chapter}/${section}/${exercise}`;
-    const browser = await puppeteer.launch({args: ['--no-sandbox']});
-    const page = await browser.newPage();
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'en-US',
-    });
-
-    await page.goto(url, {
-      waitUntil: 'networkidle0',
-    });
-
-    if (await page.$(`.dialog-404`)) {
-    // Throw error
-      console.log(`Could not find page`);
+    if (Number.parseInt(exercise) % 2 !== 1) {
+      message.channel.send('CalcChat only supports odd-numbered exercises');
+      return;
     }
-    const imgUrl = await page.evaluate(() => {
-      const solutionImage = document.querySelector('img#solutionimg');
+    // get current book from cache
+    cache.get(guildId, async (err, book) => {
+      // hit book xml point
+      const {data: bookListXML} = await axios.get(urls.booksUrl);
 
-      if (solutionImage) {
-        return (solutionImage as HTMLImageElement).src;
-      }
+      parseString(bookListXML, async (err, data) => {
+        if (err) throw err.message;
+        // find book
+        const args = {chapter, section, exercise};
+        const books: any[] = data['BOOKS']['BOOK'];
+        const xml = books.find((el) => el['$'].NAME === book);
+
+        // fetch book's xml
+        const {data: textBookXML} = await axios.get(
+            urls.base + xml['$']['CHAPTERS'],
+        );
+
+        parseString(textBookXML, (err, data) => {
+          if (err) throw err.message;
+          // Accumulate all the parts of the link that we need
+          const FILETYPE = data['CHAPTERS']['$']['FILETYPE'];
+          const SOLUTIONART = data['CHAPTERS']['$']['SOLUTIONART'];
+          const CHAPTERS: any[] = data['CHAPTERS']['CHAPTER'];
+
+          const _chapter: any = CHAPTERS.find(
+              (el) => el['$']['NAME'] === args.chapter,
+          );
+          if (!_chapter) {
+            message.channel.send(`Invalid chapter`);
+          }
+
+          const PRE = _chapter.SECTION.find(
+              (el: any) => el['$']['NAME'] === args.section,
+          );
+
+          if (!PRE) {
+            message.channel.send(`Invalid Section`);
+          }
+
+          const prefix = PRE['$']['PRE'];
+
+          if (!prefix) {
+            message.channel.send(`Invalid Section`);
+          }
+
+          const suffix = pad(args.exercise, 3);
+          message.channel.send(`${SOLUTIONART}/${prefix}${suffix}.${FILETYPE}`);
+        });
+      });
     });
-    return {
-      url,
-      imgUrl,
-    };
   } catch (err) {
     console.error(err.message);
-    return {
-      url: ``,
-      imgUrl: ``,
-    };
+    message.channel.send(err.message);
   }
+}
+
+/**
+ * 0 Pads Number String
+ *
+ * @param {string} n
+ * @param {number} width
+ * @param {string} z
+ * @return {Object}
+ */
+function pad(n: string, width: number, z: string = '0') {
+  n = n + '';
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }

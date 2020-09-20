@@ -12,6 +12,24 @@ Currently only supports Calculus 11e
 
 `!a [chapter] [section] [exercise]`
 
+### Set Book
+
+`!setbook [index]`
+
+### List Books
+
+Get your appropriate book index with
+
+`!listbooks`
+
+### Check Current Book
+
+`!currbook`
+
+### Help
+
+`!help`
+
 #### Example
 
 `!a 5 1 1`
@@ -36,7 +54,7 @@ Your Client ID will be needed to create the invite link. The invite link will lo
 
 `https://discord.com/oauth2/authorize?client_id=<CLIENT_ID>&permissions=19456&scope=bot`
 
-Now you are ready to deploy. 
+Now you are ready to deploy.
 
 ## Heroku Deployment
 
@@ -45,13 +63,6 @@ On Heroku, create a new application.
 Under the Deploy tab, find the command to add the remote repository that looks like
 
 `heroku git:remote -a <appname>`
-
-Heroku needs the puppeteer buildpack in order to use puppeteer
-
-Add it with
-```
-heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack.git
-```
 
 Then run the deploy commands.
 
