@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 
+export interface GuildModel extends mongoose.Document {
+  guildId: string;
+  book: string;
+}
 const Model = new mongoose.Schema({
   guildId: {
     type: String,
@@ -11,4 +15,4 @@ const Model = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('Guild Pairs', Model);
+export default mongoose.model<GuildModel>('Guild Pairs', Model);
