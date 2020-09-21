@@ -3,8 +3,7 @@ import {Message} from 'discord.js';
 import {prefix} from '../config.json';
 import {getAnswerImage} from '../scraper';
 import books from '../books.json';
-import cache from '../cache';
-
+import Model from '../model';
 export default async (message: Message) => {
   const {content} = message;
   try {
@@ -71,12 +70,24 @@ export default async (message: Message) => {
      */
     if (content.startsWith(`${prefix}currbook`)) {
       const id = message.guild?.id;
-
       if (id) {
-        cache.get(id, (err, reply) => {
-          if (err) throw err;
-          message.channel.send(reply);
-        });
+        try {
+          const guildPair = await Model.findOne({guildId: id});
+          if (guildPair) {
+            const {book} = guildPair;
+            console.log(guildPair);
+            message.channel.send(book);
+          } else {
+            const newGuildPair = new Model({
+              guildId: id,
+              book: books[2],
+            });
+            await newGuildPair.save();
+            message.channel.send(newGuildPair.book);
+          }
+        } catch (err) {
+          console.error(err.message);
+        }
       }
     }
     /**
@@ -86,10 +97,13 @@ export default async (message: Message) => {
       const id = message.guild?.id;
       const bookIndex =
         Number.parseInt(content.replace(`${prefix}setbook`, ''));
-      console.log(bookIndex);
       if (id) {
-        cache.set(id, books[bookIndex]);
-        message.channel.send(`Current book set to **${books[bookIndex]}**`);
+        const guild = await Model.findOne({guildId: id});
+
+        if (guild) {
+          await guild.updateOne({book: books[bookIndex]});
+          message.channel.send(`Current book set to **${books[bookIndex]}**`);
+        }
       }
     }
   } catch (err) {

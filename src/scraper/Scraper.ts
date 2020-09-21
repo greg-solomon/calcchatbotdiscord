@@ -1,9 +1,8 @@
-import cache from '../cache';
 import {Message} from 'discord.js';
 import {parseString} from 'xml2js';
 import axios from 'axios';
 import urls from '../urls.json';
-
+import Model from '../model';
 /**
  * Returns Solution Image
  *
@@ -13,7 +12,7 @@ import urls from '../urls.json';
  * @param {string} section
  * @param {string} exercise
  */
-export function getAnswerImage(
+export async function getAnswerImage(
     guildId: string,
     message: Message,
     chapter: string,
@@ -25,9 +24,11 @@ export function getAnswerImage(
       message.channel.send('CalcChat only supports odd-numbered exercises');
       return;
     }
+
+    const guildPair = await Model.findOne({guildId});
     // get current book from cache
-    cache.get(guildId, async (err, book) => {
-      // hit book xml point
+    // hit book xml point
+    if (guildPair) {
       const {data: bookListXML} = await axios.get(urls.booksUrl);
 
       parseString(bookListXML, async (err, data) => {
@@ -35,7 +36,7 @@ export function getAnswerImage(
         // find book
         const args = {chapter, section, exercise};
         const books: any[] = data['BOOKS']['BOOK'];
-        const xml = books.find((el) => el['$'].NAME === book);
+        const xml = books.find((el) => el['$'].NAME === guildPair.book);
 
         // fetch book's xml
         const {data: textBookXML} = await axios.get(
@@ -74,7 +75,7 @@ export function getAnswerImage(
           message.channel.send(`${SOLUTIONART}/${prefix}${suffix}.${FILETYPE}`);
         });
       });
-    });
+    }
   } catch (err) {
     console.error(err.message);
     message.channel.send(err.message);
